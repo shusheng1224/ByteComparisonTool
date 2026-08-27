@@ -1,0 +1,39 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="ByteComparisonTool.Views.ConfirmationDialog"
+        Width="420"
+        SizeToContent="Height"
+        CanResize="False"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        Background="#F4F6F8">
+    <Border Margin="16"
+            Padding="22"
+            Background="White"
+            BorderBrush="#DDE3EA"
+            BorderThickness="1"
+            CornerRadius="10">
+        <Grid RowDefinitions="Auto,Auto,Auto">
+            <TextBlock x:Name="TitleText"
+                       FontSize="18"
+                       FontWeight="SemiBold"
+                       Foreground="#172033" />
+            <TextBlock x:Name="MessageText"
+                       Grid.Row="1"
+                       Margin="0,12,0,22"
+                       FontSize="14"
+                       Foreground="#475467"
+                       TextWrapping="Wrap" />
+            <StackPanel Grid.Row="2"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Spacing="8">
+                <Button Content="暂不进入" Click="CancelButton_OnClick" />
+                <Button Content="进入下一阶段"
+                        Click="ConfirmButton_OnClick"
+                        Background="#2563EB"
+                        Foreground="White" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

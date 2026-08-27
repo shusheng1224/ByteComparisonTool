@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ByteComparisonTool.csproj" />
+  <Project Path="ByteComparisonTool.Tests/ByteComparisonTool.Tests.csproj" />
+</Solution>

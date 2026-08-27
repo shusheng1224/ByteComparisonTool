@@ -1,0 +1,55 @@
+{
+  "name": "板卡基础回归测试",
+  "version": 1,
+  "stages": [
+    {
+      "id": "basic-handshake",
+      "name": "Stage 1 - 握手",
+      "input": {
+        "type": "fixed",
+        "fixedData": "00 FF 12 34 56 78",
+        "length": 6,
+        "startValue": 0,
+        "seed": null
+      },
+      "generatedDataAddress": "00 00 10 00",
+      "expectedData": "AA BB CC DD EE",
+      "expectedDataAddress": "00 00 20 00",
+      "validation": {
+        "mode": "full",
+        "requireLengthMatch": true,
+        "ranges": []
+      }
+    },
+    {
+      "id": "payload-fields",
+      "name": "Stage 2 - 数据字段",
+      "input": {
+        "type": "incrementing",
+        "fixedData": "",
+        "length": 16,
+        "startValue": 0,
+        "seed": null
+      },
+      "generatedDataAddress": "00 00 11 00",
+      "expectedData": "10 20 30 40 50 60 70 80",
+      "expectedDataAddress": "00 00 21 00",
+      "validation": {
+        "mode": "ranges",
+        "requireLengthMatch": true,
+        "ranges": [
+          {
+            "name": "Header",
+            "offset": 0,
+            "length": 2
+          },
+          {
+            "name": "Payload",
+            "offset": 4,
+            "length": 4
+          }
+        ]
+      }
+    }
+  ]
+}

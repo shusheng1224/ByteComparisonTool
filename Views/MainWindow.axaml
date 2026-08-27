@@ -1,0 +1,738 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:ByteComparisonTool.ViewModels"
+        xmlns:conv="using:ByteComparisonTool.Converters"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        d:DesignWidth="1440"
+        d:DesignHeight="900"
+        x:Class="ByteComparisonTool.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        x:CompileBindings="False"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="板卡数据校验测试工具"
+        Width="1440"
+        Height="900"
+        MinWidth="960"
+        MinHeight="520"
+        Background="{StaticResource CanvasBrush}"
+        FontFamily="Inter, Microsoft YaHei UI">
+
+    <Design.DataContext>
+        <vm:MainViewModel />
+    </Design.DataContext>
+
+    <Window.Resources>
+        <conv:ValidationStateToBrushConverter x:Key="ValidationStateToBrushConverter" />
+        <conv:StageStatusBrushConverter x:Key="StageStatusBrushConverter" />
+        <conv:FourByteAddressDisplayConverter x:Key="FourByteAddressDisplayConverter" />
+
+        <SolidColorBrush x:Key="CanvasBrush" Color="#EEF2F7" />
+        <SolidColorBrush x:Key="SurfaceBrush" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="SubtleBrush" Color="#F8FAFC" />
+        <SolidColorBrush x:Key="BorderBrush" Color="#DBE2EC" />
+        <SolidColorBrush x:Key="TextBrush" Color="#172033" />
+        <SolidColorBrush x:Key="MutedBrush" Color="#66738A" />
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#2163EB" />
+        <SolidColorBrush x:Key="PrimaryHoverBrush" Color="#1A56D1" />
+        <SolidColorBrush x:Key="SuccessBrush" Color="#1A8C61" />
+        <SolidColorBrush x:Key="ErrorBrush" Color="#DC2626" />
+    </Window.Resources>
+
+    <Window.Styles>
+        <Style Selector="TextBlock.pageTitle">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+        </Style>
+        <Style Selector="TextBlock.sectionTitle">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+        </Style>
+        <Style Selector="TextBlock.caption">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
+        </Style>
+        <Style Selector="TextBlock.mono">
+            <Setter Property="FontFamily" Value="Cascadia Mono, Consolas, monospace" />
+        </Style>
+        <Style Selector="Border.panel">
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="14" />
+            <Setter Property="BoxShadow" Value="0 5 16 0 #1F0F1A2E" />
+        </Style>
+        <Style Selector="Border.codeSurface">
+            <Setter Property="Background" Value="{StaticResource SubtleBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="9" />
+        </Style>
+
+        <Style Selector="Button">
+            <Setter Property="MinHeight" Value="34" />
+            <Setter Property="Padding" Value="14,8" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="Medium" />
+        </Style>
+        <Style Selector="Button.primary">
+            <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}" />
+        </Style>
+        <Style Selector="Button.primary /template/ ContentPresenter">
+            <Setter Property="BoxShadow" Value="0 2 6 0 #240F1A2E" />
+        </Style>
+        <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource PrimaryHoverBrush}" />
+        </Style>
+        <Style Selector="Button.secondary">
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+        <Style Selector="Button.secondary:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource SubtleBrush}" />
+        </Style>
+        <Style Selector="Button.compact">
+            <Setter Property="MinHeight" Value="22" />
+            <Setter Property="Padding" Value="8,3" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="FontSize" Value="11" />
+        </Style>
+        <Style Selector="Button.copyLink">
+            <Setter Property="Background" Value="{StaticResource SubtleBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+        <Style Selector="Button.headerAction">
+            <Setter Property="FontSize" Value="13" />
+        </Style>
+        <Style Selector="Button.headerAction.secondary">
+            <Setter Property="MinHeight" Value="34" />
+            <Setter Property="Padding" Value="14,8" />
+        </Style>
+        <Style Selector="Button.headerAction.primary">
+            <Setter Property="MinHeight" Value="36" />
+            <Setter Property="Padding" Value="16,9" />
+        </Style>
+        <Style Selector="Button.stageNavigation">
+            <Setter Property="MinHeight" Value="33" />
+            <Setter Property="Padding" Value="10,8" />
+            <Setter Property="CornerRadius" Value="7" />
+            <Setter Property="FontSize" Value="12" />
+        </Style>
+        <Style Selector="ComboBox.configSelector">
+            <Setter Property="Width" Value="193" />
+            <Setter Property="MinHeight" Value="37" />
+            <Setter Property="Padding" Value="14,8" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Background" Value="{StaticResource SubtleBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+        </Style>
+
+        <Style Selector="ListBox.stageList">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        </Style>
+        <Style Selector="ListBox.stageList > ListBoxItem">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="ListBox.stageList > ListBoxItem:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource SubtleBrush}" />
+            <Setter Property="CornerRadius" Value="8" />
+        </Style>
+        <Style Selector="Border.statusBadge">
+            <Setter Property="Height" Value="18" />
+            <Setter Property="MinWidth" Value="44" />
+            <Setter Property="Padding" Value="7,2" />
+            <Setter Property="CornerRadius" Value="5" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+        <Style Selector="TextBlock.statusBadgeText">
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="FontWeight" Value="Medium" />
+            <Setter Property="LineHeight" Value="12" />
+            <Setter Property="TextWrapping" Value="NoWrap" />
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Border.compactCard">
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+        </Style>
+        <Style Selector="Button.compactAction">
+            <Setter Property="MinHeight" Value="22" />
+            <Setter Property="Padding" Value="8,3" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="FontSize" Value="10" />
+        </Style>
+        <Style Selector="ListBox.compactStageList">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
+        </Style>
+        <Style Selector="ListBox.compactStageList > ListBoxItem">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="ListBox.compactStageList > ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="#EBF2FF" />
+            <Setter Property="CornerRadius" Value="6" />
+        </Style>
+        <Style Selector="ListBox.stageList > ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource SubtleBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+        </Style>
+
+        <Style Selector="TextBlock.hexHeader">
+            <Setter Property="FontFamily" Value="Cascadia Mono, Consolas, monospace" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="LineHeight" Value="18" />
+            <Setter Property="Foreground" Value="#596B8A" />
+            <Setter Property="TextWrapping" Value="NoWrap" />
+        </Style>
+        <Style Selector="TextBlock.hexRows">
+            <Setter Property="FontFamily" Value="Cascadia Mono, Consolas, monospace" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="LineHeight" Value="18" />
+            <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
+            <Setter Property="TextAlignment" Value="Right" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+        <Style Selector="SelectableTextBlock.hexData">
+            <Setter Property="FontFamily" Value="Cascadia Mono, Consolas, monospace" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="LineHeight" Value="18" />
+            <Setter Property="Padding" Value="8,0,0,0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="TextWrapping" Value="NoWrap" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+        <Style Selector="TextBox.actualInput">
+            <Setter Property="FontFamily" Value="Cascadia Mono, Consolas, monospace" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="LineHeight" Value="20" />
+            <Setter Property="Padding" Value="12,10" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="AcceptsReturn" Value="True" />
+            <Setter Property="VerticalContentAlignment" Value="Top" />
+        </Style>
+        <Style Selector="DataGrid.differenceTable">
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="GridLinesVisibility" Value="Horizontal" />
+            <Setter Property="HorizontalGridLinesBrush" Value="#EEF2F7" />
+            <Setter Property="HeadersVisibility" Value="Column" />
+            <Setter Property="CanUserSortColumns" Value="False" />
+            <Setter Property="IsReadOnly" Value="True" />
+            <Setter Property="SelectionMode" Value="Extended" />
+        </Style>
+        <Style Selector="DataGrid.differenceTable DataGridColumnHeader">
+            <Setter Property="Height" Value="29" />
+            <Setter Property="Padding" Value="12,8" />
+            <Setter Property="Background" Value="{StaticResource SubtleBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontWeight" Value="Medium" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+        <Style Selector="DataGrid.differenceTable DataGridCell">
+            <Setter Property="Padding" Value="12,7" />
+            <Setter Property="FontFamily" Value="Cascadia Mono, Consolas, monospace" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+            <Setter Property="BorderBrush" Value="#EEF2F7" />
+        </Style>
+    </Window.Styles>
+
+    <Grid>
+    <Grid x:Name="FullLayout" RowDefinitions="76,*">
+        <Border Grid.Row="0" Background="{StaticResource SurfaceBrush}"
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1"
+                Padding="28,16" BoxShadow="0 2 10 0 #140F1A2E">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                    <Border Width="40" Height="40" CornerRadius="20" Background="{StaticResource PrimaryBrush}">
+                        <TextBlock Text="BC" Foreground="White" FontSize="14" FontWeight="Bold"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <StackPanel Spacing="2" VerticalAlignment="Center">
+                        <TextBlock Classes="pageTitle" Text="板卡数据校验测试工具" />
+                        <TextBlock Classes="caption" Text="Board Validator  ·  调试工作台" />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                    <ComboBox Classes="configSelector" ItemsSource="{Binding Configurations}"
+                              SelectedItem="{Binding SelectedConfiguration, Mode=TwoWay}"
+                              PlaceholderText="选择测试配置">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="5">
+                                    <TextBlock Text="当前配置" FontSize="12" Foreground="{StaticResource MutedBrush}" />
+                                    <TextBlock Grid.Column="1" Text="·" FontSize="12" Foreground="{StaticResource MutedBrush}" />
+                                    <TextBlock Grid.Column="2" Text="{Binding DisplayName}" FontSize="13" FontWeight="Medium"
+                                               TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding SourceText}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <Button Classes="headerAction secondary" Content="导入配置" Command="{Binding LoadConfigCommand}" />
+                    <Button Classes="headerAction secondary" Content="重新开始"
+                            Command="{Binding RestartValidationCommand}"
+                            ToolTip.Tip="清空当前配置的全部阶段结果并回到第一阶段" />
+                    <Button Classes="headerAction primary" Content="编辑当前配置" Command="{Binding EditConfigurationCommand}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="24,20,24,24" ColumnDefinitions="252,16,*" MinHeight="0"
+              Background="{StaticResource SurfaceBrush}">
+            <Border Grid.Column="0" Classes="panel">
+                <Grid Margin="16,18,16,16" RowDefinitions="Auto,13,1,12,*,16,Auto,16,Auto" MinHeight="0">
+                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                        <StackPanel Spacing="3">
+                            <TextBlock Classes="sectionTitle" Text="测试阶段" />
+                            <TextBlock Classes="caption" Text="按顺序执行并记录结果" />
+                        </StackPanel>
+                        <Border Grid.Column="1" Padding="8,4" Background="{StaticResource SubtleBrush}" CornerRadius="6" VerticalAlignment="Top">
+                            <TextBlock Classes="caption" Text="{Binding StageCountText}" FontWeight="Medium" />
+                        </Border>
+                    </Grid>
+                    <Border Grid.Row="2" Background="{StaticResource BorderBrush}" />
+                    <ListBox Grid.Row="4" Classes="stageList" ItemsSource="{Binding Stages}"
+                             SelectedItem="{Binding SelectedStage, Mode=TwoWay}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="10" ColumnDefinitions="28,10,*,8,Auto" VerticalAlignment="Center">
+                                    <Border Width="28" Height="28" CornerRadius="14"
+                                            Background="{Binding StatusText, Converter={StaticResource StageStatusBrushConverter}, ConverterParameter=Background}">
+                                        <TextBlock Text="{Binding Number}" FontSize="11" FontWeight="Bold"
+                                                   Foreground="{Binding StatusText, Converter={StaticResource StageStatusBrushConverter}, ConverterParameter=Foreground}"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    </Border>
+                                    <StackPanel Grid.Column="2" Spacing="3" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Name}" FontSize="13" FontWeight="Medium"
+                                                   Foreground="{StaticResource TextBrush}" TextWrapping="NoWrap"
+                                                   TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Name}" />
+                                        <TextBlock Text="{Binding Description}" Classes="caption" TextWrapping="NoWrap"
+                                                   TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Description}" />
+                                    </StackPanel>
+                                    <Border Grid.Column="4" Classes="statusBadge"
+                                            Background="{Binding StatusText, Converter={StaticResource StageStatusBrushConverter}, ConverterParameter=Background}">
+                                        <TextBlock Classes="statusBadgeText" Text="{Binding StatusText}"
+                                                   Foreground="{Binding StatusText, Converter={StaticResource StageStatusBrushConverter}, ConverterParameter=Foreground}" />
+                                    </Border>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <Grid Grid.Row="6" RowDefinitions="Auto,8,6">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Classes="caption" Text="流程进度" FontWeight="Medium" />
+                            <TextBlock Grid.Column="1" Classes="caption" Text="{Binding StageProgressText}"
+                                       Foreground="{StaticResource PrimaryBrush}" FontWeight="SemiBold" />
+                        </Grid>
+                        <ProgressBar Grid.Row="2" Height="6" Minimum="0" Maximum="100"
+                                     Value="{Binding StageProgressPercent}" Foreground="{StaticResource PrimaryBrush}"
+                                     Background="{StaticResource SubtleBrush}" />
+                    </Grid>
+                    <Grid Grid.Row="8" ColumnDefinitions="*,8,*">
+                        <Button Grid.Column="0" Classes="stageNavigation secondary" Content="‹  上一阶段" Command="{Binding PreviousStageCommand}" />
+                        <Button Grid.Column="2" Classes="stageNavigation primary" Content="下一阶段  ›" Command="{Binding NextStageCommand}" />
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Column="2" RowDefinitions="5*,16,3*" MinHeight="0">
+                <Grid Grid.Row="0" MinHeight="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" MinWidth="470" />
+                        <ColumnDefinition Width="16" />
+                        <ColumnDefinition Width="*" MinWidth="438" />
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Classes="panel" MinWidth="470">
+                        <Grid Margin="18,16" RowDefinitions="Auto,12,*,12,Auto,8,Auto,10,Auto" MinHeight="0">
+                            <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                                <StackPanel Spacing="3">
+                                    <TextBlock Classes="sectionTitle" Text="原始生成数据" />
+                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                        <TextBlock Classes="caption" Text="列 00–0F · 每行 16 字节" />
+                                        <TextBlock Classes="caption" Text="·" />
+                                        <TextBlock Classes="caption" Text="{Binding GeneratedByteCountText}" />
+                                    </StackPanel>
+                                </StackPanel>
+                                <Border Grid.Column="1" Padding="8,4" CornerRadius="5" Background="{StaticResource PrimaryBrush}" VerticalAlignment="Top">
+                                    <TextBlock Text="生成结果" FontSize="10" FontWeight="Medium" Foreground="White" />
+                                </Border>
+                            </Grid>
+                            <Border Grid.Row="2" Classes="codeSurface" Padding="12" MinHeight="0">
+                                <Grid RowDefinitions="20,*" ColumnDefinitions="40,*" MinHeight="0">
+                                    <TextBlock Classes="hexHeader" Text="行" HorizontalAlignment="Right" Margin="0,0,8,0" />
+                                    <TextBlock Grid.Column="1" Classes="hexHeader" Text="{Binding HexColumnHeaderText}" Margin="8,0,0,0" />
+                                    <ScrollViewer Grid.Row="1" Grid.ColumnSpan="2" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                                        <Grid ColumnDefinitions="40,*">
+                                            <TextBlock Classes="hexRows" Text="{Binding GeneratedRowHeaders}" Margin="0,1,8,0" />
+                                            <SelectableTextBlock Grid.Column="1" Classes="hexData" Text="{Binding GeneratedData}" />
+                                        </Grid>
+                                    </ScrollViewer>
+                                </Grid>
+                            </Border>
+                            <Grid Grid.Row="4" ColumnDefinitions="Auto,*,Auto,8,Auto">
+                                <TextBlock Classes="caption" Text="写入地址" VerticalAlignment="Center" FontWeight="Medium" />
+                                <TextBlock Grid.Column="2" Classes="caption mono"
+                                           Text="{Binding GeneratedDataAddress, Converter={StaticResource FourByteAddressDisplayConverter}}"
+                                           Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" />
+                                <Button Grid.Column="4" Classes="compact copyLink" Content="复制" Command="{Binding CopyGeneratedDataAddressCommand}" />
+                            </Grid>
+                            <Grid Grid.Row="6" ColumnDefinitions="Auto,*,Auto">
+                                <TextBlock Classes="caption" Text="生成规则" FontWeight="Medium" />
+                                <TextBlock Grid.Column="2" Classes="caption mono" Text="{Binding GeneratorTypeText}" Foreground="{StaticResource TextBrush}" />
+                            </Grid>
+                            <Grid Grid.Row="8" ColumnDefinitions="Auto,*,Auto">
+                                <TextBlock Classes="caption" Text="可复制" FontWeight="Medium" VerticalAlignment="Center" />
+                                <Button Grid.Column="2" Classes="compact secondary" Content="复制数据" Command="{Binding CopyGeneratedDataCommand}" />
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                    <Grid Grid.Column="2" RowDefinitions="130*,16,101*" MinWidth="438" MinHeight="0">
+                        <Border Grid.Row="0" Classes="panel">
+                            <Grid Margin="18,16" RowDefinitions="Auto,10,*,10,Auto" MinHeight="0">
+                                <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                                    <StackPanel Spacing="3">
+                                        <TextBlock Classes="sectionTitle" Text="预期返回数据" />
+                                        <StackPanel Orientation="Horizontal" Spacing="4">
+                                            <TextBlock Classes="caption" Text="列 00–0F · 每行 16 字节" />
+                                            <TextBlock Classes="caption" Text="·" />
+                                            <TextBlock Classes="caption" Text="{Binding ExpectedByteCountText}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <Border Grid.Column="1" Padding="8,4" CornerRadius="5" Background="{StaticResource SuccessBrush}" VerticalAlignment="Top">
+                                        <TextBlock Text="校验模板" FontSize="10" FontWeight="Medium" Foreground="White" />
+                                    </Border>
+                                </Grid>
+                                <Border Grid.Row="2" Classes="codeSurface" Padding="12" MinHeight="0">
+                                    <Grid RowDefinitions="20,*" ColumnDefinitions="40,*" MinHeight="0">
+                                        <TextBlock Classes="hexHeader" Text="行" HorizontalAlignment="Right" Margin="0,0,8,0" />
+                                        <TextBlock Grid.Column="1" Classes="hexHeader" Text="{Binding HexColumnHeaderText}" Margin="8,0,0,0" />
+                                        <ScrollViewer Grid.Row="1" Grid.ColumnSpan="2" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                                            <Grid ColumnDefinitions="40,*">
+                                                <TextBlock Classes="hexRows" Text="{Binding ExpectedRowHeaders}" Margin="0,1,8,0" />
+                                                <SelectableTextBlock Grid.Column="1" Classes="hexData" Text="{Binding ExpectedData}" />
+                                            </Grid>
+                                        </ScrollViewer>
+                                    </Grid>
+                                </Border>
+                                <Grid Grid.Row="4" ColumnDefinitions="Auto,8,Auto,8,*" Height="31">
+                                    <Border Grid.Column="0" Height="31" Padding="7,2" CornerRadius="6"
+                                            Background="{StaticResource SubtleBrush}"
+                                            BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                                        <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
+                                            <TextBlock Classes="caption" Text="返回地址" FontWeight="Medium"
+                                                       VerticalAlignment="Center" />
+                                            <TextBlock Classes="caption mono" FontSize="10"
+                                                       Text="{Binding ExpectedDataAddress, Converter={StaticResource FourByteAddressDisplayConverter}}"
+                                                       Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" />
+                                            <Button Classes="compact copyLink" Content="复制" Height="21" MinHeight="21" Padding="6,2"
+                                                    Command="{Binding CopyExpectedDataAddressCommand}" />
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Grid.Column="2" Height="31" Padding="7,2" CornerRadius="6"
+                                            Background="{StaticResource SubtleBrush}"
+                                            BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                                        <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
+                                            <TextBlock Classes="caption" Text="返回数量" FontWeight="Medium"
+                                                       VerticalAlignment="Center" />
+                                            <TextBlock Classes="caption mono" FontSize="10" Text="{Binding ExpectedByteCountText}"
+                                                       Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" />
+                                            <Button Classes="compact copyLink" Content="复制" Height="21" MinHeight="21" Padding="6,2"
+                                                    Command="{Binding CopyExpectedByteCountCommand}"
+                                                    ToolTip.Tip="复制纯数字字节数" />
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Grid.Column="4" Height="31" Padding="7,2" CornerRadius="6"
+                                            Background="{StaticResource SubtleBrush}"
+                                            BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                                        <StackPanel Orientation="Horizontal" Spacing="5" HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center">
+                                            <TextBlock Classes="caption" Text="校验规则" FontWeight="Medium"
+                                                       VerticalAlignment="Center" />
+                                            <TextBlock Classes="caption mono" FontSize="10" Text="全量比较"
+                                                       Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                            </Grid>
+                        </Border>
+
+                        <Border Grid.Row="2" Classes="panel">
+                            <Grid Margin="18,16,18,5" RowDefinitions="Auto,12,*,12,Auto" MinHeight="0">
+                                <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                                    <StackPanel Spacing="3">
+                                        <TextBlock Classes="sectionTitle" Text="实际返回数据" />
+                                        <TextBlock Classes="caption" Text="支持粘贴带空格、换行或逗号的十六进制字符串" />
+                                    </StackPanel>
+                                    <Border Grid.Column="1" Padding="8,4" CornerRadius="5" Background="{StaticResource SuccessBrush}" VerticalAlignment="Top">
+                                        <TextBlock Text="{Binding ActualByteCountText}" FontSize="10" FontWeight="Medium" Foreground="White" />
+                                    </Border>
+                                </Grid>
+                                <Border Grid.Row="2" Background="{StaticResource SubtleBrush}" BorderBrush="{StaticResource PrimaryBrush}"
+                                        BorderThickness="1" CornerRadius="8" BoxShadow="0 0 5 0 #2E2163EB" MinHeight="0">
+                                    <TextBox Classes="actualInput" Text="{Binding ActualData, Mode=TwoWay}" PlaceholderText="例如：AA BB CC DD EE"
+                                             ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
+                                </Border>
+                                <Grid Grid.Row="4" ColumnDefinitions="Auto,*,Auto">
+                                    <TextBlock Classes="caption" Text="{Binding ActualByteCountText}" VerticalAlignment="Center" />
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                                        <Button Classes="compact secondary" Content="粘贴" Command="{Binding PasteActualDataCommand}" />
+                                        <Button Classes="compact secondary" Content="格式化" Command="{Binding FormatActualDataCommand}" />
+                                        <Button Classes="compact secondary" Content="清空" Command="{Binding ClearActualDataCommand}" />
+                                        <Button Classes="compact primary" Content="重新校验" Command="{Binding ValidateDataCommand}" />
+                                    </StackPanel>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Grid>
+
+                <Border Grid.Row="2" Classes="panel">
+                    <Grid Margin="18,16" RowDefinitions="Auto,12,Auto,12,*" MinHeight="0">
+                        <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                            <StackPanel Spacing="3">
+                                <TextBlock Classes="sectionTitle" Text="校验结果" />
+                                <TextBlock Classes="caption" Text="全量比较 · 长度、内容、指定偏移均已检查" />
+                            </StackPanel>
+                            <Border Grid.Column="1" Padding="8,4" CornerRadius="5"
+                                    Background="{Binding ValidationState, Converter={StaticResource ValidationStateToBrushConverter}}" VerticalAlignment="Top">
+                                <TextBlock Text="{Binding ResultTitle}" FontSize="10" FontWeight="Medium" Foreground="White" />
+                            </Border>
+                        </Grid>
+                        <Grid Grid.Row="2" ColumnDefinitions="34,16,Auto,24,Auto,*,Auto" VerticalAlignment="Center">
+                            <Border Width="34" Height="34" CornerRadius="17"
+                                    Background="{Binding ValidationState, Converter={StaticResource ValidationStateToBrushConverter}}">
+                                <TextBlock Text="{Binding ResultIcon}" FontSize="18" FontWeight="SemiBold" Foreground="White"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <StackPanel Grid.Column="2" Spacing="3" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding ResultTitle}" FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource TextBrush}" />
+                                <TextBlock Text="{Binding ResultSummary}" Classes="caption" TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding ResultSummary}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                <Border Padding="8,5" CornerRadius="5" Background="{StaticResource SubtleBrush}">
+                                    <TextBlock Text="长度检查" FontSize="10" Foreground="{Binding ValidationState, Converter={StaticResource ValidationStateToBrushConverter}}" />
+                                </Border>
+                                <Border Padding="8,5" CornerRadius="5" Background="{StaticResource SubtleBrush}">
+                                    <TextBlock Text="内容检查" FontSize="10" Foreground="{Binding ValidationState, Converter={StaticResource ValidationStateToBrushConverter}}" />
+                                </Border>
+                                <Border Padding="8,5" CornerRadius="5" Background="{StaticResource SubtleBrush}">
+                                    <TextBlock Text="偏移检查" FontSize="10" Foreground="{Binding ValidationState, Converter={StaticResource ValidationStateToBrushConverter}}" />
+                                </Border>
+                            </StackPanel>
+                            <TextBlock Grid.Column="6" Classes="caption" Text="{Binding LastValidationTimeText}" VerticalAlignment="Center" />
+                        </Grid>
+                        <DataGrid Grid.Row="4" Classes="differenceTable" AutoGenerateColumns="False" RowHeight="29"
+                                  CanUserResizeColumns="True" ItemsSource="{Binding Differences}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="偏移" Width="*" Binding="{Binding OffsetText}" />
+                                <DataGridTextColumn Header="期望" Width="*" Binding="{Binding ExpectedText}" />
+                                <DataGridTextColumn Header="实际" Width="*" Binding="{Binding ActualText}" />
+                                <DataGridTemplateColumn Header="结果" Width="70">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="差异" Foreground="{StaticResource ErrorBrush}" FontSize="11"
+                                                       VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+    </Grid>
+
+    <Grid x:Name="CompactLayout" IsVisible="False" RowDefinitions="34,*"
+          Background="{StaticResource CanvasBrush}">
+        <Border Grid.Row="0" Classes="compactCard" CornerRadius="0,0,8,8"
+                BorderThickness="0,0,0,1" Padding="14,0">
+            <Grid ColumnDefinitions="Auto,*,Auto,10,Auto,6,Auto" VerticalAlignment="Center">
+                <TextBlock Text="BC  板卡数据校验" FontSize="11" FontWeight="SemiBold"
+                           Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="2" Classes="caption" VerticalAlignment="Center">
+                    <Run Text="{Binding SelectedConfiguration.DisplayName}" />
+                    <Run Text="  ·" />
+                </TextBlock>
+                <Button Grid.Column="4" Classes="compactAction secondary" Content="重新开始"
+                        Command="{Binding RestartValidationCommand}"
+                        ToolTip.Tip="清空全部阶段结果并回到第一阶段" />
+                <Button Grid.Column="6" Classes="compactAction" Content="编辑配置"
+                        Command="{Binding EditConfigurationCommand}" />
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="12,10,12,12"
+              RowDefinitions="30,10,82,10,48,10,34,*"
+              ColumnDefinitions="*,24,*" MinWidth="0" MinHeight="0">
+            <Border Grid.Row="0" Grid.ColumnSpan="3" Classes="compactCard">
+                <Grid ColumnDefinitions="*,12,Auto" Margin="6,0">
+                    <ListBox Classes="compactStageList" ItemsSource="{Binding Stages}"
+                             SelectedItem="{Binding SelectedStage, Mode=TwoWay}">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Rows="1" />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="8,0" ColumnDefinitions="Auto,6,*,8,Auto" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Number}" FontSize="10" FontWeight="SemiBold"
+                                               Foreground="{Binding StatusText, Converter={StaticResource StageStatusBrushConverter}, ConverterParameter=Foreground}" />
+                                    <TextBlock Grid.Column="2" Text="{Binding Name}" FontSize="10" FontWeight="Medium"
+                                               Foreground="{StaticResource TextBrush}" TextWrapping="NoWrap"
+                                               TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Name}" />
+                                    <TextBlock Grid.Column="4" Text="{Binding StatusText}" FontSize="9"
+                                               Foreground="{Binding StatusText, Converter={StaticResource StageStatusBrushConverter}, ConverterParameter=Foreground}"
+                                               TextWrapping="NoWrap" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <TextBlock Grid.Column="2" Text="{Binding StageProgressText}" FontSize="10" FontWeight="SemiBold"
+                               Foreground="{StaticResource PrimaryBrush}" VerticalAlignment="Center" />
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="2" Grid.Column="0" Classes="compactCard" Padding="12,9">
+                <Grid RowDefinitions="Auto,4,Auto,*" ColumnDefinitions="*,Auto">
+                    <TextBlock Text="原始生成数据" FontSize="11" FontWeight="SemiBold"
+                               Foreground="{StaticResource TextBrush}" />
+                    <TextBlock Grid.Row="2" Classes="caption" FontSize="9" TextTrimming="CharacterEllipsis">
+                        <Run Text="{Binding GeneratedByteCountText}" />
+                        <Run Text="  ·  16 字节 / 行  ·  可滚动" />
+                    </TextBlock>
+                    <StackPanel Grid.Column="1" Grid.RowSpan="3" Orientation="Horizontal" Spacing="6"
+                                VerticalAlignment="Center">
+                        <Button Classes="compactAction copyLink" Content="复制地址"
+                                Command="{Binding CopyGeneratedDataAddressCommand}" />
+                        <Button Classes="compactAction secondary" Content="复制数据"
+                                Command="{Binding CopyGeneratedDataCommand}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="2" Grid.Column="2" Classes="compactCard" Padding="12,9">
+                <Grid RowDefinitions="Auto,4,Auto,*" ColumnDefinitions="*,Auto">
+                    <TextBlock Text="预期返回数据" FontSize="11" FontWeight="SemiBold"
+                               Foreground="{StaticResource TextBrush}" />
+                    <TextBlock Grid.Row="2" Classes="caption" FontSize="9" TextTrimming="CharacterEllipsis">
+                        <Run Text="{Binding ExpectedByteCountText}" />
+                        <Run Text="  ·  返回地址 " />
+                        <Run Text="{Binding ExpectedDataAddress, Converter={StaticResource FourByteAddressDisplayConverter}}" />
+                        <Run Text="  ·  全量比较" />
+                    </TextBlock>
+                    <StackPanel Grid.Column="1" Grid.RowSpan="3" Orientation="Horizontal" Spacing="6"
+                                VerticalAlignment="Center">
+                        <Button Classes="compactAction copyLink" Content="复制地址"
+                                Command="{Binding CopyExpectedDataAddressCommand}" />
+                        <Button Classes="compactAction secondary" Content="复制数量"
+                                Command="{Binding CopyExpectedByteCountCommand}"
+                                ToolTip.Tip="复制纯数字字节数" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="4" Grid.ColumnSpan="3" Classes="compactCard" Padding="12,6">
+                <Grid ColumnDefinitions="130,12,*,8,Auto" VerticalAlignment="Center">
+                    <TextBlock Text="实际返回数据" FontSize="11" FontWeight="SemiBold"
+                               Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="2" Classes="caption" FontSize="9" TextTrimming="CharacterEllipsis"
+                               Text="{Binding ActualByteCountText, StringFormat=已识别 {0} · 支持粘贴十六进制数据}" />
+                    <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="6">
+                        <Button Classes="compactAction secondary" Content="粘贴" Command="{Binding PasteActualDataCommand}" />
+                        <Button Classes="compactAction secondary" Content="清空" Command="{Binding ClearActualDataCommand}" />
+                        <Button Classes="compactAction primary" Content="重新校验" Command="{Binding ValidateDataCommand}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="6" Grid.ColumnSpan="3" Classes="compactCard" Padding="14,0">
+                <Grid ColumnDefinitions="110,16,*,16,Auto" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding ResultTitle}" FontSize="11" FontWeight="SemiBold"
+                               Foreground="{Binding ValidationState, Converter={StaticResource ValidationStateToBrushConverter}}"
+                               VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="2" Text="{Binding ResultSummary}" FontSize="10"
+                               Foreground="{StaticResource MutedBrush}" TextWrapping="NoWrap"
+                               TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                    <Button x:Name="CompactDifferenceToggleButton" Grid.Column="4"
+                            Classes="compactAction copyLink" Content="查看差异表  →"
+                            Click="ToggleCompactDifferencesButton_OnClick" />
+                </Grid>
+            </Border>
+
+            <Border x:Name="CompactDifferencePanel" Grid.Row="7" Grid.ColumnSpan="3"
+                    Classes="compactCard" Margin="0,10,0,0" Padding="12,10" IsVisible="False">
+                <Grid RowDefinitions="Auto,8,*" MinHeight="0">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock Text="差异明细" FontSize="11" FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextBrush}" />
+                            <TextBlock Text="紧凑模式内展开，不切换完整布局" FontSize="9"
+                                       Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" />
+                        </StackPanel>
+                        <TextBlock Grid.Column="1" Text="{Binding ResultSummary}" FontSize="9"
+                                   Foreground="{StaticResource MutedBrush}" TextTrimming="CharacterEllipsis"
+                                   MaxWidth="420" />
+                    </Grid>
+                    <DataGrid Grid.Row="2" Classes="differenceTable" AutoGenerateColumns="False" RowHeight="29"
+                              CanUserResizeColumns="True" ItemsSource="{Binding Differences}" MinHeight="0">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="偏移" Width="*" Binding="{Binding OffsetText}" />
+                            <DataGridTextColumn Header="期望" Width="*" Binding="{Binding ExpectedText}" />
+                            <DataGridTextColumn Header="实际" Width="*" Binding="{Binding ActualText}" />
+                            <DataGridTemplateColumn Header="结果" Width="64">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="差异" Foreground="{StaticResource ErrorBrush}" FontSize="10"
+                                                   VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+    </Grid>
+</Window>

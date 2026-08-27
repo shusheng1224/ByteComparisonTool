@@ -1,0 +1,619 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converters="using:ByteComparisonTool.Converters"
+        x:Class="ByteComparisonTool.Views.ConfigurationEditorDialog"
+        x:CompileBindings="False"
+        Title="配置编辑器"
+        Width="1440"
+        Height="760"
+        MinWidth="1180"
+        MinHeight="680"
+        WindowStartupLocation="CenterOwner"
+        Background="{StaticResource CanvasBrush}"
+        FontFamily="Inter, Microsoft YaHei UI">
+
+    <Window.Resources>
+        <converters:EnumDisplayConverter x:Key="EnumDisplayConverter" />
+        <converters:EnumEqualsConverter x:Key="EnumEqualsConverter" />
+        <converters:StageStatusBrushConverter x:Key="StageStatusBrushConverter" />
+
+        <SolidColorBrush x:Key="CanvasBrush" Color="#EEF2F7" />
+        <SolidColorBrush x:Key="SurfaceBrush" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="SubtleBrush" Color="#F8FAFC" />
+        <SolidColorBrush x:Key="BorderBrush" Color="#DBE2EC" />
+        <SolidColorBrush x:Key="TextBrush" Color="#172033" />
+        <SolidColorBrush x:Key="MutedBrush" Color="#66738A" />
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#2163EB" />
+        <SolidColorBrush x:Key="PrimaryHoverBrush" Color="#1A56D1" />
+        <SolidColorBrush x:Key="SuccessBrush" Color="#1A8C61" />
+        <SolidColorBrush x:Key="ErrorBrush" Color="#DC2626" />
+    </Window.Resources>
+
+    <Window.Styles>
+        <Style Selector="TextBlock.title">
+            <Setter Property="FontSize" Value="19" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+        </Style>
+        <Style Selector="TextBlock.sectionTitle">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+        </Style>
+        <Style Selector="TextBlock.caption">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
+        </Style>
+        <Style Selector="TextBlock.label">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontWeight" Value="Medium" />
+            <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
+        </Style>
+        <Style Selector="TextBlock.mono">
+            <Setter Property="FontFamily" Value="Cascadia Mono, Consolas, monospace" />
+        </Style>
+
+        <Style Selector="Border.card">
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="14" />
+            <Setter Property="BoxShadow" Value="0 5 16 0 #1F0F1A2E" />
+        </Style>
+
+        <Style Selector="Button">
+            <Setter Property="MinHeight" Value="33" />
+            <Setter Property="Padding" Value="14,8" />
+            <Setter Property="CornerRadius" Value="7" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="Medium" />
+        </Style>
+        <Style Selector="Button.primary">
+            <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}" />
+        </Style>
+        <Style Selector="Button.primary /template/ ContentPresenter">
+            <Setter Property="BoxShadow" Value="0 2 6 0 #240F1A2E" />
+        </Style>
+        <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource PrimaryHoverBrush}" />
+        </Style>
+        <Style Selector="Button.secondary">
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+        <Style Selector="Button.secondary:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource SubtleBrush}" />
+        </Style>
+        <Style Selector="Button.compact">
+            <Setter Property="MinHeight" Value="25" />
+            <Setter Property="Padding" Value="10,5" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="FontSize" Value="11" />
+        </Style>
+        <Style Selector="Button.linkButton">
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+        <Style Selector="Button.danger">
+            <Setter Property="Background" Value="#FFF5F5" />
+            <Setter Property="Foreground" Value="{StaticResource ErrorBrush}" />
+            <Setter Property="BorderBrush" Value="#FECACA" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+        <Style Selector="Button.danger:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#FEE2E2" />
+        </Style>
+
+        <Style Selector="TextBox.editorInput">
+            <Setter Property="MinHeight" Value="31" />
+            <Setter Property="Padding" Value="10,7" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Background" Value="{StaticResource SubtleBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="7" />
+        </Style>
+        <Style Selector="TextBox.monoInput">
+            <Setter Property="FontFamily" Value="Cascadia Mono, Consolas, monospace" />
+        </Style>
+        <Style Selector="TextBox.hexEditor">
+            <Setter Property="FontFamily" Value="Cascadia Mono, Consolas, monospace" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="LineHeight" Value="18" />
+            <Setter Property="Padding" Value="8,0,0,0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="TextWrapping" Value="NoWrap" />
+            <Setter Property="AcceptsReturn" Value="True" />
+            <Setter Property="VerticalContentAlignment" Value="Top" />
+        </Style>
+        <Style Selector="ComboBox.editorInput">
+            <Setter Property="MinHeight" Value="31" />
+            <Setter Property="Padding" Value="10,6" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Background" Value="{StaticResource SubtleBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="7" />
+        </Style>
+        <Style Selector="NumericUpDown.editorInput">
+            <Setter Property="MinHeight" Value="31" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Background" Value="{StaticResource SubtleBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="7" />
+        </Style>
+
+        <Style Selector="ListBox.editorList">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        </Style>
+        <Style Selector="ListBox.editorList > ListBoxItem">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0,0,0,10" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="ListBox.editorList > ListBoxItem:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource SubtleBrush}" />
+            <Setter Property="CornerRadius" Value="8" />
+        </Style>
+        <Style Selector="ListBox.editorList > ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource SubtleBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+        </Style>
+        <Style Selector="ListBox.editorList > ListBoxItem:selected Border.selectionMark">
+            <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
+        </Style>
+        <Style Selector="ListBox.editorList > ListBoxItem:selected TextBlock.selectionMarkText">
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+        <Style Selector="Border.statusBadge">
+            <Setter Property="Height" Value="18" />
+            <Setter Property="MinWidth" Value="44" />
+            <Setter Property="Padding" Value="7,2" />
+            <Setter Property="CornerRadius" Value="5" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+        <Style Selector="TextBlock.statusBadgeText">
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="LineHeight" Value="12" />
+            <Setter Property="TextWrapping" Value="NoWrap" />
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style Selector="RadioButton.segment">
+            <Setter Property="Padding" Value="10,7" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
+            <Setter Property="Background" Value="{StaticResource SubtleBrush}" />
+        </Style>
+        <Style Selector="RadioButton.segment:checked">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
+        </Style>
+        <Style Selector="Border.codeSurface">
+            <Setter Property="Background" Value="{StaticResource SubtleBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+        </Style>
+        <Style Selector="TextBlock.hexHeader">
+            <Setter Property="FontFamily" Value="Cascadia Mono, Consolas, monospace" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="LineHeight" Value="18" />
+            <Setter Property="Foreground" Value="#596B8A" />
+            <Setter Property="TextWrapping" Value="NoWrap" />
+        </Style>
+        <Style Selector="TextBlock.hexRows">
+            <Setter Property="FontFamily" Value="Cascadia Mono, Consolas, monospace" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="LineHeight" Value="18" />
+            <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
+            <Setter Property="TextAlignment" Value="Right" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+        <Style Selector="SelectableTextBlock.hexData">
+            <Setter Property="FontFamily" Value="Cascadia Mono, Consolas, monospace" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="LineHeight" Value="18" />
+            <Setter Property="Padding" Value="8,0,0,0" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="TextWrapping" Value="NoWrap" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+    </Window.Styles>
+
+    <Grid RowDefinitions="76,*">
+        <Border Grid.Row="0"
+                Background="{StaticResource SurfaceBrush}"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="28,16"
+                BoxShadow="0 2 10 0 #140F1A2E">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                    <Border Width="36" Height="36" CornerRadius="10" Background="{StaticResource PrimaryBrush}">
+                        <TextBlock Text="BC" Foreground="White" FontSize="12" FontWeight="SemiBold"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <StackPanel Spacing="2" VerticalAlignment="Center">
+                        <TextBlock Classes="title" Text="配置编辑器" />
+                        <TextBlock Classes="caption" Text="统一管理配置名称、阶段名称与生成规则" />
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                    <TextBlock Classes="caption" FontWeight="Medium" VerticalAlignment="Center">
+                        <Run Text="当前配置 · " />
+                        <Run Text="{Binding SelectedConfiguration.DisplayName}" />
+                    </TextBlock>
+                    <Button Classes="secondary" Content="取消" Click="CancelButton_OnClick" />
+                    <Button Classes="primary" Content="保存配置" Click="SaveAndCloseButton_OnClick" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="24,20,24,24" ColumnDefinitions="248,16,520,16,*" MinHeight="0">
+            <Border Grid.Column="0" Classes="card">
+                <Grid Margin="16" RowDefinitions="Auto,12,1,12,*,12,33" MinHeight="0">
+                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                        <StackPanel Spacing="3">
+                            <TextBlock Classes="sectionTitle" Text="测试配置" />
+                            <TextBlock Classes="caption" Text="固定目录 · 可随时切换" />
+                        </StackPanel>
+                        <Border Grid.Column="1" Padding="7,3" CornerRadius="5" Background="{StaticResource SubtleBrush}"
+                                VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Configurations.Count, StringFormat={}{0} 项}" FontSize="10"
+                                       Foreground="{StaticResource MutedBrush}" />
+                        </Border>
+                    </Grid>
+                    <Border Grid.Row="2" Background="{StaticResource BorderBrush}" />
+
+                    <ListBox Grid.Row="4" Classes="editorList" ItemsSource="{Binding Configurations}"
+                             SelectedItem="{Binding SelectedConfiguration, Mode=TwoWay}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="10,11" ColumnDefinitions="30,10,*" MinHeight="30">
+                                    <Border Classes="selectionMark" Width="30" Height="30" CornerRadius="8" Background="{StaticResource SubtleBrush}">
+                                        <TextBlock Classes="selectionMarkText" Text="{Binding Initial}" FontSize="11" FontWeight="SemiBold"
+                                                   Foreground="{StaticResource MutedBrush}"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    </Border>
+                                    <StackPanel Grid.Column="2" Spacing="3" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding DisplayName}" FontSize="13" FontWeight="Medium"
+                                                   Foreground="{StaticResource TextBrush}" TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Text="{Binding EditorSummary}" Classes="caption" TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <Button Grid.Row="6" Classes="linkButton" HorizontalContentAlignment="Left"
+                            Content="＋  新增配置" Command="{Binding AddConfigurationCommand}" />
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="2" Classes="card">
+                <Grid Margin="16" RowDefinitions="Auto,12,1,12,*,12,27" MinHeight="0">
+                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                        <StackPanel Spacing="3">
+                            <TextBlock Classes="sectionTitle" Text="阶段列表" />
+                            <TextBlock Classes="caption" Text="选择阶段后，在右侧统一修改属性" />
+                        </StackPanel>
+                        <Button Grid.Column="1" Classes="compact primary" Content="＋ 新增阶段"
+                                Command="{Binding AddStageCommand}" VerticalAlignment="Center" />
+                    </Grid>
+                    <Border Grid.Row="2" Background="{StaticResource BorderBrush}" />
+
+                    <ListBox Grid.Row="4" Classes="editorList" ItemsSource="{Binding Stages}"
+                             SelectedItem="{Binding SelectedStage, Mode=TwoWay}">
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="删除当前阶段" Command="{Binding DeleteStageCommand}" />
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="10" ColumnDefinitions="28,10,*,10,Auto" MinHeight="32">
+                                    <Border Classes="selectionMark" Width="28" Height="28" CornerRadius="14" Background="{StaticResource SubtleBrush}">
+                                        <TextBlock Classes="selectionMarkText" Text="{Binding Number}" FontSize="11" FontWeight="SemiBold"
+                                                   Foreground="{StaticResource MutedBrush}"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    </Border>
+                                    <StackPanel Grid.Column="2" Spacing="3" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Name}" FontSize="13" FontWeight="Medium"
+                                                   Foreground="{StaticResource TextBrush}" TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Text="{Binding Description}" Classes="caption" TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+                                    <Border Grid.Column="4" Classes="statusBadge"
+                                            Background="{Binding StatusText, Converter={StaticResource StageStatusBrushConverter}, ConverterParameter=Background}"
+                                            VerticalAlignment="Top">
+                                        <TextBlock Classes="statusBadgeText" Text="{Binding StatusText}"
+                                                   Foreground="{Binding StatusText, Converter={StaticResource StageStatusBrushConverter}, ConverterParameter=Foreground}" />
+                                    </Border>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <Grid Grid.Row="6" ColumnDefinitions="*,8,*,8,*,8,*">
+                        <Button Classes="compact secondary" Content="↑ 上移" HorizontalContentAlignment="Left"
+                                Command="{Binding MoveStageUpCommand}" />
+                        <Button Grid.Column="2" Classes="compact secondary" Content="↓ 下移" HorizontalContentAlignment="Left"
+                                Command="{Binding MoveStageDownCommand}" />
+                        <Button Grid.Column="4" Classes="compact linkButton" Content="复制阶段" HorizontalContentAlignment="Left"
+                                Command="{Binding DuplicateStageCommand}" />
+                        <Button Grid.Column="6" Classes="compact danger" Content="删除阶段" HorizontalContentAlignment="Left"
+                                Command="{Binding DeleteStageCommand}" />
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="4" Classes="card">
+                <Grid Margin="16" RowDefinitions="Auto,12,1,12,*,12,29" MinHeight="0">
+                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                        <StackPanel Spacing="3">
+                            <TextBlock Classes="sectionTitle" Text="阶段属性" />
+                            <TextBlock Classes="caption" Text="修改内容会统一保存到当前配置" />
+                        </StackPanel>
+                        <Border Grid.Column="1" Padding="8,4" CornerRadius="5"
+                                Background="{Binding SelectedStage.StatusText, Converter={StaticResource StageStatusBrushConverter}, ConverterParameter=Background}"
+                                VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <TextBlock Text="{Binding SelectedStage.Name}" FontSize="10"
+                                           Foreground="{Binding SelectedStage.StatusText, Converter={StaticResource StageStatusBrushConverter}, ConverterParameter=Foreground}" />
+                                <TextBlock Text="·" FontSize="10"
+                                           Foreground="{Binding SelectedStage.StatusText, Converter={StaticResource StageStatusBrushConverter}, ConverterParameter=Foreground}" />
+                                <TextBlock Text="{Binding SelectedStage.StatusText}" FontSize="10"
+                                           Foreground="{Binding SelectedStage.StatusText, Converter={StaticResource StageStatusBrushConverter}, ConverterParameter=Foreground}" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                    <Border Grid.Row="2" Background="{StaticResource BorderBrush}" />
+
+                    <ScrollViewer Grid.Row="4" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Spacing="12">
+                            <Grid ColumnDefinitions="*,12,*">
+                                <StackPanel Spacing="5">
+                                    <TextBlock Classes="label" Text="配置名称" />
+                                    <TextBox Classes="editorInput" Text="{Binding SelectedConfiguration.DisplayName, Mode=TwoWay}"
+                                             PlaceholderText="请输入配置名称" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2" Spacing="5">
+                                    <TextBlock Classes="label" Text="阶段名称" />
+                                    <TextBox Classes="editorInput" Text="{Binding SelectedStage.Name, Mode=TwoWay}"
+                                             PlaceholderText="请输入阶段名称" />
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid ColumnDefinitions="*,12,*">
+                                <StackPanel Spacing="5">
+                                    <TextBlock Classes="label" Text="生成类型" />
+                                    <ComboBox Classes="editorInput" ItemsSource="{Binding GenerationTypes}"
+                                              SelectedItem="{Binding SelectedGenerationType, Mode=TwoWay}">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Converter={StaticResource EnumDisplayConverter}}" />
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2" Spacing="5">
+                                    <TextBlock Classes="label" Text="写入地址" />
+                                    <TextBox Classes="editorInput monoInput"
+                                             Text="{Binding SelectedStage.Model.GeneratedDataAddress, Mode=TwoWay}"
+                                             PlaceholderText="00 00 00 00" />
+                                </StackPanel>
+                            </Grid>
+
+                            <StackPanel Spacing="5"
+                                        IsVisible="{Binding SelectedGenerationType, Converter={StaticResource EnumEqualsConverter}, ConverterParameter=Fixed}">
+                                <TextBlock Classes="label" Text="生成参数 · 数据" />
+                                <TextBox Classes="editorInput monoInput" Height="38" AcceptsReturn="True" TextWrapping="Wrap"
+                                         Text="{Binding SelectedStage.Model.Input.FixedData, Mode=TwoWay}"
+                                         PlaceholderText="固定生成方式使用的十六进制数据" />
+                            </StackPanel>
+
+                            <Grid ColumnDefinitions="*,12,*"
+                                  IsVisible="{Binding SelectedGenerationType, Converter={StaticResource EnumEqualsConverter}, ConverterParameter=Incrementing}">
+                                <StackPanel Spacing="5">
+                                    <TextBlock Classes="label" Text="生成长度" />
+                                    <NumericUpDown Classes="editorInput" Minimum="1" Maximum="1048576" FormatString="0"
+                                                   Value="{Binding SelectedStage.Model.Input.Length, Mode=TwoWay}" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2" Spacing="5">
+                                    <TextBlock Classes="label" Text="起始字节" />
+                                    <NumericUpDown Classes="editorInput" Minimum="0" Maximum="255" FormatString="0"
+                                                   Value="{Binding SelectedStage.Model.Input.StartValue, Mode=TwoWay}" />
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid ColumnDefinitions="*,12,*"
+                                  IsVisible="{Binding SelectedGenerationType, Converter={StaticResource EnumEqualsConverter}, ConverterParameter=Random}">
+                                <StackPanel Spacing="5">
+                                    <TextBlock Classes="label" Text="生成长度" />
+                                    <NumericUpDown Classes="editorInput" Minimum="1" Maximum="1048576" FormatString="0"
+                                                   Value="{Binding SelectedStage.Model.Input.Length, Mode=TwoWay}" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2" Spacing="5">
+                                    <TextBlock Classes="label" Text="随机种子" />
+                                    <NumericUpDown Classes="editorInput" Minimum="-2147483648" Maximum="2147483647" FormatString="0"
+                                                   Value="{Binding SelectedStage.Model.Input.Seed, Mode=TwoWay}" />
+                                </StackPanel>
+                            </Grid>
+
+                            <StackPanel Spacing="10"
+                                        IsVisible="{Binding SelectedGenerationType, Converter={StaticResource EnumEqualsConverter}, ConverterParameter=Repeated}">
+                                <StackPanel Spacing="5">
+                                    <TextBlock Classes="label" Text="重复数据" />
+                                    <TextBox Classes="editorInput monoInput" Height="38" AcceptsReturn="True" TextWrapping="Wrap"
+                                             Text="{Binding SelectedStage.Model.Input.RepeatedData, Mode=TwoWay}"
+                                             PlaceholderText="例如：AA BB CC" />
+                                </StackPanel>
+                                <Grid ColumnDefinitions="*,12,*">
+                                    <StackPanel Spacing="5">
+                                        <TextBlock Classes="label" Text="重复次数" />
+                                        <NumericUpDown Classes="editorInput" Minimum="1" Maximum="2147483647" FormatString="0"
+                                                       Value="{Binding SelectedStage.Model.Input.RepeatCount, Mode=TwoWay}" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2" Spacing="5">
+                                        <TextBlock Classes="label" Text="字节上限" />
+                                        <NumericUpDown Classes="editorInput" Minimum="1" Maximum="1048576" FormatString="0"
+                                                       Value="{Binding SelectedStage.Model.Input.ByteLimit, Mode=TwoWay}" />
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+
+                            <StackPanel Spacing="5">
+                                <Grid ColumnDefinitions="*,Auto,8,Auto">
+                                    <TextBlock Classes="label" Text="当前生成数据预览" />
+                                    <TextBlock Grid.Column="1" Classes="caption"
+                                               Text="{Binding GeneratedPreviewStatusText}"
+                                               TextTrimming="CharacterEllipsis"
+                                               ToolTip.Tip="{Binding GeneratedPreviewStatusText}" />
+                                    <Button Grid.Column="3" Classes="compact linkButton" Content="复制数据"
+                                            Command="{Binding CopyGeneratedPreviewDataCommand}"
+                                            ToolTip.Tip="复制当前参数生成的完整数据" />
+                                </Grid>
+                                <Border Classes="codeSurface" Height="188" Padding="10">
+                                    <Grid RowDefinitions="20,*" ColumnDefinitions="40,*" MinHeight="0">
+                                        <TextBlock Classes="hexHeader" Text="行" HorizontalAlignment="Right"
+                                                   Margin="0,0,8,0" />
+                                        <TextBlock Grid.Column="1" Classes="hexHeader"
+                                                   Text="{Binding HexColumnHeaderText}" Margin="8,0,0,0" />
+                                        <ScrollViewer Grid.Row="1" Grid.ColumnSpan="2"
+                                                      HorizontalScrollBarVisibility="Disabled"
+                                                      VerticalScrollBarVisibility="Auto">
+                                            <Grid ColumnDefinitions="40,*">
+                                                <TextBlock Classes="hexRows"
+                                                           Text="{Binding GeneratedPreviewRowHeaders}"
+                                                           Margin="0,1,8,0" />
+                                                <SelectableTextBlock Grid.Column="1" Classes="hexData"
+                                                                     Text="{Binding GeneratedPreviewData}" />
+                                            </Grid>
+                                        </ScrollViewer>
+                                    </Grid>
+                                </Border>
+                                <TextBlock Classes="caption" FontSize="10"
+                                           Text="参数修改后实时刷新 · 每行固定 16 字节" />
+                            </StackPanel>
+
+                            <StackPanel Spacing="5">
+                                <Grid ColumnDefinitions="*,Auto,8,Auto">
+                                    <TextBlock Classes="label" Text="预期返回数据" />
+                                    <TextBlock Grid.Column="1" Classes="caption" Text="{Binding ExpectedByteCountText}" />
+                                    <Button Grid.Column="3" Classes="compact linkButton" Content="格式化"
+                                            Command="{Binding FormatExpectedDataCommand}" />
+                                </Grid>
+                                <Border Classes="codeSurface" Height="188" Padding="10">
+                                    <Grid RowDefinitions="20,*" ColumnDefinitions="40,*" MinHeight="0">
+                                        <TextBlock Classes="hexHeader" Text="行" HorizontalAlignment="Right"
+                                                   Margin="0,0,8,0" />
+                                        <TextBlock Grid.Column="1" Classes="hexHeader"
+                                                   Text="{Binding HexColumnHeaderText}" Margin="8,0,0,0" />
+                                        <ScrollViewer Grid.Row="1" Grid.ColumnSpan="2"
+                                                      HorizontalScrollBarVisibility="Disabled"
+                                                      VerticalScrollBarVisibility="Auto">
+                                            <Grid ColumnDefinitions="40,*">
+                                                <TextBlock Classes="hexRows" Text="{Binding ExpectedRowHeaders}"
+                                                           Margin="0,1,8,0" />
+                                                <TextBox Grid.Column="1" Classes="hexEditor"
+                                                         Text="{Binding ExpectedData, Mode=TwoWay}"
+                                                         PlaceholderText="输入或粘贴十六进制数据"
+                                                         LostFocus="ExpectedDataEditor_OnLostFocus"
+                                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                         ScrollViewer.VerticalScrollBarVisibility="Disabled" />
+                                            </Grid>
+                                        </ScrollViewer>
+                                    </Grid>
+                                </Border>
+                                <TextBlock Classes="caption" FontSize="10"
+                                           Text="离开编辑区后自动整理为每行 16 字节" />
+                            </StackPanel>
+
+                            <Grid ColumnDefinitions="*,12,*">
+                                <StackPanel Spacing="5">
+                                    <TextBlock Classes="label" Text="预期数据地址" />
+                                    <TextBox Classes="editorInput monoInput"
+                                             Text="{Binding SelectedStage.Model.ExpectedDataAddress, Mode=TwoWay}"
+                                             PlaceholderText="00 00 00 00" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2" Spacing="5">
+                                    <TextBlock Classes="label" Text="校验方式" />
+                                    <ComboBox Classes="editorInput" ItemsSource="{Binding ValidationModes}"
+                                              SelectedItem="{Binding SelectedStage.Model.Validation.Mode, Mode=TwoWay}">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Converter={StaticResource EnumDisplayConverter}}" />
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+                                <StackPanel Spacing="3">
+                                    <TextBlock Classes="label" Text="校验规则" />
+                                    <TextBlock Text="比较长度、内容与指定偏移" FontSize="10" Foreground="{StaticResource MutedBrush}" />
+                                </StackPanel>
+                                <CheckBox Grid.Column="1" Content="要求总长度一致" FontSize="11"
+                                          IsChecked="{Binding SelectedStage.Model.Validation.RequireLengthMatch, Mode=TwoWay}" />
+                            </Grid>
+
+                            <StackPanel Spacing="8"
+                                        IsVisible="{Binding SelectedStage.Model.Validation.Mode, Converter={StaticResource EnumEqualsConverter}, ConverterParameter=Ranges}">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Classes="label" Text="字段比较区间" VerticalAlignment="Center" />
+                                    <Button Grid.Column="1" Classes="compact linkButton" Content="＋ 添加区间"
+                                            Command="{Binding AddComparisonRangeCommand}" />
+                                </Grid>
+                                <DataGrid Height="130" AutoGenerateColumns="False" HeadersVisibility="Column"
+                                          GridLinesVisibility="All" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                                          HorizontalGridLinesBrush="#E9EDF2" VerticalGridLinesBrush="#E9EDF2"
+                                          RowHeight="34" ItemsSource="{Binding ComparisonRanges}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="字段名称" Width="*" Binding="{Binding Name, Mode=TwoWay}" />
+                                        <DataGridTextColumn Header="Offset" Width="90" Binding="{Binding Offset, Mode=TwoWay}" />
+                                        <DataGridTextColumn Header="长度" Width="80" Binding="{Binding Length, Mode=TwoWay}" />
+                                        <DataGridTemplateColumn Header="操作" Width="68">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Classes="compact secondary" Content="删除" Tag="{Binding}" Click="DeleteRange_OnClick" />
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <Grid Grid.Row="6" ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+                        <TextBlock Text="保存后立即回到测试页，当前阶段数据会重新生成" FontSize="10"
+                                   Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" />
+                        <Button Grid.Column="1" Classes="compact primary" Content="应用到当前阶段"
+                                Command="{Binding SaveConfigCommand}" />
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>
